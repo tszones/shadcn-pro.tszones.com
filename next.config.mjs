@@ -1,4 +1,12 @@
+import createMDX from 'fumadocs-mdx/config';
+ 
+const withMDX = createMDX({
+    include: ['./**/*.{md,mdx,json}'],
+  });
+ 
 /** @type {import('next').NextConfig} */
-const nextConfig = {};
-
-export default nextConfig;
+const config = {
+    reactStrictMode: true,
+};
+ 
+export default withMDX(config);
