@@ -12,8 +12,12 @@
       pathname,
       origin,
     } = url;
-  
+
     if (pathname === "/") {
+      return NextResponse.redirect(origin + "/components", 301);
+    }
+
+    if((pathname === "/test" || pathname === "/test/" || pathname === "test") && process.env.NODE_ENV === "production") {
       return NextResponse.redirect(origin + "/components", 301);
     }
   
