@@ -1,3 +1,5 @@
+export const runtime = 'edge';
+
 import { getPage, getPages } from '@/lib/source';
 import type { Metadata } from 'next';
 import { DocsPage, DocsBody } from 'fumadocs-ui/page';
