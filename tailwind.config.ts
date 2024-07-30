@@ -84,7 +84,10 @@ const config = {
       },
     },
   },
-  plugins: [require("tailwindcss-animate")],
+  plugins: [
+    require("tailwindcss-animate"),
+    require('tailwind-custom-utilities'),
+],
 } satisfies Config
 
 export default config

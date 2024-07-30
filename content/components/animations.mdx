@@ -1,0 +1,158 @@
+---
+title: Animations
+description: Animations
+---
+
+import { MotionFadeInDivDemo } from "@/components/demo/motion-fade-in-div-demo"
+import { MotionFadeInFromBottomDemo } from "@/components/demo/motion-fade-in-from-bottom"
+import { MotionBlurInDivDemo } from "@/components/demo/motion-blur-in-div-demo"
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { AnimationContainer } from "@/components/animation-container";
+
+
+## Fade In Animation
+
+<Tabs items={['Preview', 'Code', 'Installation']}>
+  <Tab value="Preview">
+  <AnimationContainer>
+  <div className="flex-row-center pt-4">
+    <MotionFadeInDivDemo></MotionFadeInDivDemo>
+  </div>
+  </AnimationContainer>
+  </Tab>
+  <Tab value="Code">
+```jsx
+"use client"
+
+import { MotionFadeInDiv } from "@/components/motion-ui/motion-fade-in-div";
+
+export const MotionFadeInDivDemo = () => {
+    return <MotionFadeInDiv>Fade In</MotionFadeInDiv>
+}
+```
+</Tab>
+
+    <Tab value="Installation">
+```jsx title="motion-fade-in-div.tsx"
+"use client"
+import { motion, MotionProps } from 'framer-motion';
+import { ReactNode, CSSProperties } from 'react';
+
+
+interface MotionDivProps extends MotionProps {
+    children?: ReactNode;
+    className?: string;
+  }
+
+export const MotionFadeInDiv = ({ children, ...props } : MotionDivProps) => {
+    return <motion.div
+    initial={{ opacity: 0 }}
+    animate={{ opacity: 1 }}
+    {...props}
+    >
+      {children}
+    </motion.div>
+}
+```
+  </Tab>
+</Tabs>
+
+
+## Fade In From Bottom Animation
+
+
+<Tabs items={['Preview', 'Code', 'Installation']}>
+  <Tab value="Preview">
+  <AnimationContainer>
+  <div className="flex-row-center pt-4">
+    <MotionFadeInFromBottomDemo></MotionFadeInFromBottomDemo>
+  </div>
+  </AnimationContainer>
+  </Tab>
+  <Tab value="Code">
+```jsx
+"use client"
+
+import { MotionFadeInFromBottom } from "../motion-ui/motion-fade-in-from-bottom";
+
+export const MotionFadeInFromBottomDemo = () => {
+    return <MotionFadeInFromBottom>Fade In From Bottom</MotionFadeInFromBottom>
+}
+```
+</Tab>
+
+    <Tab value="Installation">
+```jsx title="motion-fade-in-from-bottom.tsx"
+"use client"
+import { motion, MotionProps } from 'framer-motion';
+import { ReactNode } from 'react';
+
+
+interface MotionFadeInFromBottomProps extends MotionProps {
+    children?: ReactNode;
+    className?: string;
+  }
+
+export const MotionFadeInFromBottom = ({ children, ...props } : MotionFadeInFromBottomProps) => {
+    return <motion.div
+          initial={{ opacity: 0, y: 50 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          transition={{
+            duration: 0.5,
+          }}
+          {...props}
+    >
+      {children}
+    </motion.div>
+}
+```
+  </Tab>
+</Tabs>
+
+
+## Blur In
+
+<Tabs items={['Preview', 'Code', 'Installation']}>
+  <Tab value="Preview">
+  <AnimationContainer>
+  <div className="flex-row-center pt-4">
+    <MotionBlurInDivDemo></MotionBlurInDivDemo>
+  </div>
+  </AnimationContainer>
+  </Tab>
+  <Tab value="Code">
+```jsx
+"use client"
+
+import { MotionBlurInDiv } from "@/components/motion-ui/motion-blur-in-div";
+
+export const MotionBlurInDivDemo = () => {
+    return (
+        <MotionBlurInDiv>Blur in</MotionBlurInDiv>
+    )
+}
+```
+</Tab>
+
+    <Tab value="Installation">
+```jsx title="motion-blur-in-div.tsx"
+"use client"
+
+import { motion } from "framer-motion"
+ 
+export const MotionBlurInDiv = ({ children, ...props }: { children: React.ReactNode }) => {
+  return (
+    <motion.div
+      initial={{ filter: "blur(20px)", opacity: 0 }}
+      animate={{ filter: "blur(0px)", opacity: 1 }}
+      transition={{ duration: 1.2 }}
+      {...props}
+    >
+      {children}
+    </motion.div>
+  )
+}
+```
+  </Tab>
+</Tabs>
+
