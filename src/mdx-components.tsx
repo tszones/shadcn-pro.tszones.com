@@ -2,7 +2,7 @@ import type { MDXComponents } from 'mdx/types';
 // Assume you're using Fumadocs UI
 import defaultComponents from 'fumadocs-ui/mdx';
 import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
-import { MDXTable } from './mdx-table';
+import { MDXTable } from './components/ui-pro/mdx-table';
 import { Callout } from 'fumadocs-ui/components/callout';
 
 

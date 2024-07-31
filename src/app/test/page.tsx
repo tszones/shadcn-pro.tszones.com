@@ -2,12 +2,13 @@
 
 import Link from "next/link"
 import { TreeViewDemo_V2 } from "@/components/demo/tree-view-demo-2"
+import { MDXTableDemo } from "@/components/demo/mdx-table-demo-v2"
 
 export default function TestPage (){
     return (
         <>
             <div>
-                <TreeViewDemo_V2></TreeViewDemo_V2>
+                <MDXTableDemo></MDXTableDemo>
             </div>
             <Link 
                 href={"https://www.google.com"}

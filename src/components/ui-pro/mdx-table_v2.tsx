@@ -61,20 +61,8 @@ export function MDXTable({ data }: MDXTableProps) {
                   return (
                     <TableCell key={`${rowIndex}-${row[field].value}`}>
                       <div className="flex items-center gap-1">
-                        <kbd
-                          className={cn(
-                            "pointer-events-none select-none rounded px-1 font-mono font-medium opacity-100 flex items-center gap-1",
-                            {
-                              "bg-primary/95 text-primary-foreground ":
-                                field === fields[0],
-                              "bg-muted":
-                                field !== fields[0] &&
-                                row[field].value !== NonValue &&
-                                isArray,
-                            }
-                          )}
-                        >
-                          {isArray
+
+                      {isArray
                             ? (row[field].value as string[]).map(
                                 (value, index) => (
                                   <div
@@ -100,7 +88,6 @@ export function MDXTable({ data }: MDXTableProps) {
                               *
                             </span>
                           )}
-                        </kbd>
                         {row[field].description && (
                           <MiniInfoPopover>
                             {row[field].description ||
