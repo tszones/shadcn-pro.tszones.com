@@ -1,0 +1,29 @@
+{
+    "tabs-mdx-component": {
+        "prefix": "tabs-mdx-component",
+        "body": [
+          "<Tabs items={['Preview', 'Code', 'Installation']}>",
+          "    <Tab value=\"Preview\">",
+          "        <div className=\"flex-row-center pt-4\">",
+          "            <MotionFadeInDivDemo></MotionFadeInDivDemo>",
+          "        </div>",
+          "    </Tab>",
+          "",
+          "    <Tab value=\"Code\">",
+          "        ```jsx title=\"motion-fade-in-div.tsx\"",
+          "            console.log(1) // [!code highlight]",
+          "        ```",
+          "    </Tab>",
+          "",
+          "    <Tab value=\"Installation\">",
+          "        ```jsx title=\"motion-fade-in-div.tsx\"",
+          "",
+          "        ```",
+          "    </Tab>",
+          "</Tabs>",
+          "",
+          ""
+        ],
+        "description": "tabs-mdx-component"
+      }
+}

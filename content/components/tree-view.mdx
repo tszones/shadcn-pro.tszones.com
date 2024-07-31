@@ -1,0 +1,989 @@
+---
+title: Tree View
+description: Tree View
+---
+
+import { Tab, Tabs } from 'fumadocs-ui/components/tabs';
+import { Step, Steps } from 'fumadocs-ui/components/steps';
+import ResponsiveModalDemo from '@/components/demo/responsive-modal-demo';
+import ResponsiveModalSide from '@/components/demo/responsive-modal-side'
+import {TreeViewDemo} from "@/components/demo/tree-view-demo"
+import { TreeViewDemo_V2 } from "@/components/demo/tree-view-demo-2"
+
+
+Tree View
+
+A tree view that assembles all the functionalities of the Accordion component to create a tree view.
+
+<Tabs items={['Preview', 'Code']}>
+  <Tab value="Preview">
+  <div className="flex-row-center pt-4">
+    <TreeViewDemo/>
+  </div>
+  </Tab>
+  <Tab value="Code">
+```jsx
+"use client";
+
+import {
+  Tree,
+  Folder,
+  File,
+  CollapseButton,
+} from "@/components/ui-pro/tree-view-api";
+
+export const TreeViewDemo = () => {
+  const elements = [
+    {
+      id: "1",
+      isSelectable: true,
+      name: "src",
+      children: [
+        {
+          id: "2",
+          isSelectable: true,
+          name: "app.tsx",
+        },
+        {
+          id: "3",
+          isSelectable: true,
+          name: "components",
+          children: [
+            {
+              id: "20",
+              isSelectable: true,
+              name: "pages",
+              children: [
+                {
+                  id: "21",
+                  isSelectable: true,
+                  name: "interface.ts",
+                },
+              ],
+            },
+          ],
+        },
+        {
+          id: "6",
+          isSelectable: true,
+          name: "ui",
+          children: [
+            {
+              id: "7",
+              isSelectable: true,
+              name: "carousel.tsx",
+            },
+          ],
+        },
+      ],
+    },
+  ];
+  return (
+    <Tree
+      className="rounded-md h-60 bg-background overflow-hidden p-2"
+      initialSelectedId="21"
+      elements={elements}
+    >
+      <Folder element="src" value="1">
+        <File value="2">
+          <div> app.tsx </div>
+        </File>
+        <Folder value="3" element="components">
+          <Folder value="20" element="pages">
+            <File value="21">
+              <div>interface.ts</div>
+            </File>
+          </Folder>
+        </Folder>
+        <Folder value="6" element="ui">
+          <File value="7">
+            <div>carousel.tsx</div>
+          </File>
+        </Folder>
+      </Folder>
+      <CollapseButton elements={elements} />
+    </Tree>
+  );
+};
+```
+  </Tab>
+</Tabs>
+
+## Installation
+
+<Steps>
+
+<Step>
+### Install the following dependencies:
+
+```package-install
+npm install @radix-ui/react-accordion
+npm install use-resize-observer
+npm install @tanstack/react-virtual
+npx shadcn-ui@latest add scroll-area
+```
+
+</Step>
+
+
+<Step>
+### Copy and paste the following code into your project.
+
+<Tabs items={['Tree view', 'Tree view api']}>
+  <Tab value="Tree view">
+```jsx
+"use client";
+
+import { cn } from "@/lib/utils";
+import React, { forwardRef, useCallback, useRef } from "react";
+import useResizeObserver from "use-resize-observer";
+import { useVirtualizer } from "@tanstack/react-virtual";
+import {
+  Tree,
+  Folder,
+  File,
+  CollapseButton,
+  TreeViewElement,
+} from "./tree-view-api";
+
+// TODO: Add the ability to add custom icons
+
+interface TreeViewComponentProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+type TreeViewProps = {
+  initialSelectedId?: string;
+  elements: TreeViewElement[];
+  indicator?: boolean;
+} & (
+  | {
+      initialExpendedItems?: string[];
+      expandAll?: false;
+    }
+  | {
+      initialExpendedItems?: undefined;
+      expandAll: true;
+    }
+) &
+  TreeViewComponentProps;
+
+export const TreeView = ({
+  elements,
+  className,
+  initialSelectedId,
+  initialExpendedItems,
+  expandAll,
+  indicator = false,
+}: TreeViewProps) => {
+  const containerRef = useRef<HTMLDivElement>(null);
+
+  const { getVirtualItems, getTotalSize } = useVirtualizer({
+    count: elements.length,
+    getScrollElement: () => containerRef.current,
+    estimateSize: useCallback(() => 40, []),
+    overscan: 5,
+  });
+
+  const { height = getTotalSize(), width } = useResizeObserver({
+    ref: containerRef,
+  });
+  return (
+    <div
+      ref={containerRef}
+      className={cn(
+        "w-full rounded-md overflow-hidden py-1 relative",
+        className
+      )}
+    >
+      <Tree
+        initialSelectedId={initialSelectedId}
+        initialExpendedItems={initialExpendedItems}
+        elements={elements}
+        style={{ height, width }}
+        className="w-full h-full overflow-y-auto"
+      >
+        {getVirtualItems().map((element:any) => (
+          <TreeItem
+            aria-label="Root"
+            key={element.key}
+            elements={[elements[element.index]]}
+            indicator={indicator}
+          />
+        ))}
+        <CollapseButton elements={elements} expandAll={expandAll}>
+          <span>Expand All</span>
+        </CollapseButton>
+      </Tree>
+    </div>
+  );
+};
+
+TreeView.displayName = "TreeView";
+
+export const TreeItem = forwardRef<
+  HTMLUListElement,
+  {
+    elements?: TreeViewElement[];
+    indicator?: boolean;
+  } & React.HTMLAttributes<HTMLUListElement>
+>(({ className, elements, indicator, ...props }, ref) => {
+  return (
+    <ul ref={ref} className="w-full space-y-1 " {...props}>
+      {elements &&
+        elements.map((element) => (
+          <li key={element.id} className="w-full">
+            {element.children && element.children?.length > 0 ? (
+              <Folder
+                element={element.name}
+                value={element.id}
+                isSelectable={element.isSelectable}
+              >
+                <TreeItem
+                  key={element.id}
+                  aria-label={`folder ${element.name}`}
+                  elements={element.children}
+                  indicator={indicator}
+                />
+              </Folder>
+            ) : (
+              <File
+                value={element.id}
+                aria-label={`File ${element.name}`}
+                key={element.id}
+                isSelectable={element.isSelectable}
+              >
+                <span>{element?.name}</span>
+              </File>
+            )}
+          </li>
+        ))}
+    </ul>
+  );
+});
+
+TreeItem.displayName = "TreeItem";
+
+```
+  </Tab>
+  <Tab value="Tree view api">
+```jsx
+"use client";
+
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { cn } from "@/lib/utils";
+import * as AccordionPrimitive from "@radix-ui/react-accordion";
+import { FileIcon, FolderIcon, FolderOpenIcon } from "lucide-react";
+import React, {
+  createContext,
+  forwardRef,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
+import { Button } from "@/components/ui/button";
+
+type TreeViewElement = {
+  id: string;
+  name: string;
+  isSelectable?: boolean;
+  children?: TreeViewElement[];
+};
+
+type TreeContextProps = {
+  selectedId: string | undefined;
+  expendedItems: string[] | undefined;
+  indicator: boolean;
+  handleExpand: (id: string) => void;
+  selectItem: (id: string) => void;
+  setExpendedItems?: React.Dispatch<React.SetStateAction<string[] | undefined>>;
+  openIcon?: React.ReactNode;
+  closeIcon?: React.ReactNode;
+  direction: "rtl" | "ltr";
+};
+
+const TreeContext = createContext<TreeContextProps | null>(null);
+
+const useTree = () => {
+  const context = useContext(TreeContext);
+  if (!context) {
+    throw new Error("useTree must be used within a TreeProvider");
+  }
+  return context;
+};
+
+interface TreeViewComponentProps extends React.HTMLAttributes<HTMLDivElement> {}
+
+type Direction = "rtl" | "ltr" | undefined;
+
+type TreeViewProps = {
+  initialSelectedId?: string;
+  indicator?: boolean;
+  elements?: TreeViewElement[];
+  initialExpendedItems?: string[];
+  openIcon?: React.ReactNode;
+  closeIcon?: React.ReactNode;
+} & TreeViewComponentProps;
+
+const Tree = forwardRef<HTMLDivElement, TreeViewProps>(
+  (
+    {
+      className,
+      elements,
+      initialSelectedId,
+      initialExpendedItems,
+      children,
+      indicator = true,
+      openIcon,
+      closeIcon,
+      dir,
+      ...props
+    },
+    ref
+  ) => {
+    const [selectedId, setSelectedId] = useState<string | undefined>(
+      initialSelectedId
+    );
+    const [expendedItems, setExpendedItems] = useState<string[] | undefined>(
+      initialExpendedItems
+    );
+
+    const selectItem = useCallback((id: string) => {
+      setSelectedId(id);
+    }, []);
+
+    const handleExpand = useCallback((id: string) => {
+      setExpendedItems((prev) => {
+        if (prev?.includes(id)) {
+          return prev.filter((item) => item !== id);
+        }
+        return [...(prev ?? []), id];
+      });
+    }, []);
+
+    const expandSpecificTargetedElements = useCallback(
+      (elements?: TreeViewElement[], selectId?: string) => {
+        if (!elements || !selectId) return;
+        const findParent = (
+          currentElement: TreeViewElement,
+          currentPath: string[] = []
+        ) => {
+          const isSelectable = currentElement.isSelectable ?? true;
+          const newPath = [...currentPath, currentElement.id];
+          if (currentElement.id === selectId) {
+            if (isSelectable) {
+              setExpendedItems((prev) => [...(prev ?? []), ...newPath]);
+            } else {
+              if (newPath.includes(currentElement.id)) {
+                newPath.pop();
+                setExpendedItems((prev) => [...(prev ?? []), ...newPath]);
+              }
+            }
+            return;
+          }
+          if (
+            isSelectable &&
+            currentElement.children &&
+            currentElement.children.length > 0
+          ) {
+            currentElement.children.forEach((child) => {
+              findParent(child, newPath);
+            });
+          }
+        };
+        elements.forEach((element) => {
+          findParent(element);
+        });
+      },
+      []
+    );
+
+    useEffect(() => {
+      if (initialSelectedId) {
+        expandSpecificTargetedElements(elements, initialSelectedId);
+      }
+    }, [initialSelectedId, elements]);
+
+    const direction = dir === "rtl" ? "rtl" : "ltr";
+
+    return (
+      <TreeContext.Provider
+        value={{
+          selectedId,
+          expendedItems,
+          handleExpand,
+          selectItem,
+          setExpendedItems,
+          indicator,
+          openIcon,
+          closeIcon,
+          direction,
+        }}
+      >
+        <div className={cn("size-full", className)}>
+          <ScrollArea
+            ref={ref}
+            className="h-full relative px-2"
+            dir={dir as Direction}
+          >
+            <AccordionPrimitive.Root
+              {...props}
+              type="multiple"
+              defaultValue={expendedItems}
+              value={expendedItems}
+              className="flex flex-col gap-1"
+              onValueChange={(value) =>
+                setExpendedItems((prev) => [...(prev ?? []), value[0]])
+              }
+              dir={dir as Direction}
+            >
+              {children}
+            </AccordionPrimitive.Root>
+          </ScrollArea>
+        </div>
+      </TreeContext.Provider>
+    );
+  }
+);
+
+Tree.displayName = "Tree";
+
+const TreeIndicator = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => {
+  const { direction } = useTree();
+
+  return (
+    <div
+      dir={direction}
+      ref={ref}
+      className={cn(
+        "h-full w-px bg-muted absolute left-1.5 rtl:right-1.5 py-3 rounded-md hover:bg-slate-300 duration-300 ease-in-out",
+        className
+      )}
+      {...props}
+    />
+  );
+});
+
+TreeIndicator.displayName = "TreeIndicator";
+
+interface FolderComponentProps
+  extends React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Item> {}
+
+type FolderProps = {
+  expendedItems?: string[];
+  element: string;
+  isSelectable?: boolean;
+  isSelect?: boolean;
+} & FolderComponentProps;
+
+const Folder = forwardRef<
+  HTMLDivElement,
+  FolderProps & React.HTMLAttributes<HTMLDivElement>
+>(
+  (
+    {
+      className,
+      element,
+      value,
+      isSelectable = true,
+      isSelect,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const {
+      direction,
+      handleExpand,
+      expendedItems,
+      indicator,
+      setExpendedItems,
+      openIcon,
+      closeIcon,
+    } = useTree();
+
+    return (
+      <AccordionPrimitive.Item
+        {...props}
+        value={value}
+        className="relative overflow-hidden h-full "
+      >
+        <AccordionPrimitive.Trigger
+          className={cn(
+            `flex items-center gap-1 text-sm rounded-md`,
+            className,
+            {
+              "bg-muted rounded-md": isSelect && isSelectable,
+              "cursor-pointer": isSelectable,
+              "cursor-not-allowed opacity-50": !isSelectable,
+            }
+          )}
+          disabled={!isSelectable}
+          onClick={() => handleExpand(value)}
+        >
+          {expendedItems?.includes(value)
+            ? openIcon ?? <FolderOpenIcon className="h-4 w-4" />
+            : closeIcon ?? <FolderIcon className="h-4 w-4" />}
+          <span>{element}</span>
+        </AccordionPrimitive.Trigger>
+        <AccordionPrimitive.Content className="text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down relative overflow-hidden h-full">
+          {element && indicator && <TreeIndicator aria-hidden="true" />}
+          <AccordionPrimitive.Root
+            dir={direction}
+            type="multiple"
+            className="flex flex-col gap-1 py-1 ml-5 rtl:mr-5 "
+            defaultValue={expendedItems}
+            value={expendedItems}
+            onValueChange={(value) => {
+              setExpendedItems?.((prev) => [...(prev ?? []), value[0]]);
+            }}
+          >
+            {children}
+          </AccordionPrimitive.Root>
+        </AccordionPrimitive.Content>
+      </AccordionPrimitive.Item>
+    );
+  }
+);
+
+Folder.displayName = "Folder";
+
+const File = forwardRef<
+  HTMLButtonElement,
+  {
+    value: string;
+    handleSelect?: (id: string) => void;
+    isSelectable?: boolean;
+    isSelect?: boolean;
+    fileIcon?: React.ReactNode;
+  } & React.ComponentPropsWithoutRef<typeof AccordionPrimitive.Trigger>
+>(
+  (
+    {
+      value,
+      className,
+      handleSelect,
+      isSelectable = true,
+      isSelect,
+      fileIcon,
+      children,
+      ...props
+    },
+    ref
+  ) => {
+    const { direction, selectedId, selectItem } = useTree();
+    const isSelected = isSelect ?? selectedId === value;
+    return (
+      <AccordionPrimitive.Item value={value} className="relative">
+        <AccordionPrimitive.Trigger
+          ref={ref}
+          {...props}
+          dir={direction}
+          disabled={!isSelectable}
+          aria-label="File"
+          className={cn(
+            "flex items-center gap-1 cursor-pointer text-sm pr-1 rtl:pl-1 rtl:pr-0 rounded-md  duration-200 ease-in-out",
+            {
+              "bg-muted": isSelected && isSelectable,
+            },
+            isSelectable ? "cursor-pointer" : "opacity-50 cursor-not-allowed",
+            className
+          )}
+          onClick={() => selectItem(value)}
+        >
+          {fileIcon ?? <FileIcon className="h-4 w-4" />}
+          {children}
+        </AccordionPrimitive.Trigger>
+      </AccordionPrimitive.Item>
+    );
+  }
+);
+
+File.displayName = "File";
+
+const CollapseButton = forwardRef<
+  HTMLButtonElement,
+  {
+    elements: TreeViewElement[];
+    expandAll?: boolean;
+  } & React.HTMLAttributes<HTMLButtonElement>
+>(({ className, elements, expandAll = false, children, ...props }, ref) => {
+  const { expendedItems, setExpendedItems } = useTree();
+
+  const expendAllTree = useCallback((elements: TreeViewElement[]) => {
+    const expandTree = (element: TreeViewElement) => {
+      const isSelectable = element.isSelectable ?? true;
+      if (isSelectable && element.children && element.children.length > 0) {
+        setExpendedItems?.((prev) => [...(prev ?? []), element.id]);
+        element.children.forEach(expandTree);
+      }
+    };
+
+    elements.forEach(expandTree);
+  }, []);
+
+  const closeAll = useCallback(() => {
+    setExpendedItems?.([]);
+  }, []);
+
+  useEffect(() => {
+    console.log(expandAll);
+    if (expandAll) {
+      expendAllTree(elements);
+    }
+  }, [expandAll]);
+
+  return (
+    <Button
+      variant={"ghost"}
+      className="h-8 w-fit p-1 absolute bottom-1 right-2"
+      onClick={
+        expendedItems && expendedItems.length > 0
+          ? closeAll
+          : () => expendAllTree(elements)
+      }
+      ref={ref}
+      {...props}
+    >
+      {children}
+      <span className="sr-only">Toggle</span>
+    </Button>
+  );
+});
+
+CollapseButton.displayName = "CollapseButton";
+
+export { Tree, Folder, File, CollapseButton, type TreeViewElement };
+```
+  </Tab>
+</Tabs>
+
+
+</Step>
+ 
+
+<Step>
+### Update the import paths to match your project setup.
+</Step>
+
+<Step>
+### Update tailwind.config.ts
+
+```js title="tailwind.config.ts"
+/** @type {import('tailwindcss').Config} */
+module.exports = {
+  theme: {
+    extend: {
+      keyframes: { // [!code highlight]
+        "accordion-down": { // [!code highlight]
+          from: { height: "0" },// [!code highlight]
+          to: { height: "var(--radix-accordion-content-height)" },// [!code highlight]
+        },// [!code highlight]
+        "accordion-up": {// [!code highlight]
+          from: { height: "var(--radix-accordion-content-height)" },// [!code highlight]
+          to: { height: "0" },// [!code highlight]
+        },// [!code highlight]
+      },// [!code highlight]
+      animation: {// [!code highlight]
+        "accordion-down": "accordion-down 0.2s ease-out",// [!code highlight]
+        "accordion-up": "accordion-up 0.2s ease-out",// [!code highlight]
+      },// [!code highlight]
+    },
+  },
+};
+
+```
+</Step>
+
+</Steps>
+
+
+## Why there is two components?
+
+The TreeView component has two different ways to be used, that you can choose , based on your choice , that you have picked in the installation [section](#installation).
+
+- The first approach is the `tree-view` component that is based on the `tree-view-api` components, in other words it is a wrapper for devs that don't want to have an custom functionality, but you still have the access to customise the ui , some of the benifits are :
+
+  - Full control over the UI.
+  - All functionality is provided out of the box , including the (Virtualization , Selection , Expend/Collapse , Keyboard Navigation).
+  - You can customise the functionality if you want.
+
+- The second approach is the `tree-view-api` component that is based on the [radix-ui-accordion](https://www.radix-ui.com/docs/primitives/components/accordion) components, and it is the primitive api that you can use to build your own custom tree view, some of the benifits are:
+
+  - Full control over the UI.
+  - You can customise the functionality as you want.
+
+
+## API Reference
+
+<MDXTable
+  data={[
+    {
+      prop: {
+        value: "prop",
+      },
+      type: { value: ["type"] },
+      defaultValue: { value: "default value" },
+    },
+    {
+      prop: {
+        value: "initialSelectedId",
+        description: "The id of the element that should be selected by default",
+      },
+      type: { value: ["string"] },
+      defaultValue: { value: "--" },
+    },
+    {
+      prop: {
+        value: "expendAll",
+        description:
+          "Boolean that indicates if all the elements should be expended by default",
+      },
+      type: { value: ["boolean"] },
+      defaultValue: { value: ["false"] },
+    },
+    {
+      prop: {
+        value: "elements",
+        required: true,
+        description: (
+          <>
+            Description of the element object inside this Array that is passed
+            to the TreeView component
+            <p>
+              See the props in this&nbsp;
+              <a href="#treeviewelement">section</a>
+            </p>
+          </>
+        ),
+      },
+      type: { value: ["TreeViewElement[]"] },
+      defaultValue: { value: "--" },
+    },
+    {
+      prop: {
+        value: "initialExpendedItems",
+        description:
+          "Array of the ids of the elements that should be expended by default",
+      },
+      type: { value: ["string[]"] },
+      defaultValue: { value: "--" },
+    },
+    {
+      prop : {
+        value : "openIcon",
+        description : "The icon that should be displayed when the folder is opened"
+      },
+      type : { value : ["ReactNode"] },
+      defaultValue : { value : ["<FolderOpenIcon />"] }
+    } ,
+    {
+      prop : {
+        value : "closeIcon",
+        description : "The icon that should be displayed when the folder is closed"
+      },
+      type : { value : ["ReactNode"] },
+      defaultValue : { value : ["<FolderIcon />"] }
+    } ,
+    {
+      prop : {
+        value : "fileIcon",
+        description : "The icon that should be displayed when the folder is selected"
+      },
+      type : { value : ["ReactNode"] },
+      defaultValue : { value : ["<FileIcon />"] }
+    }
+  ]}
+/>
+
+
+
+<Callout title="Heads up">The initialExpendedItems with expendAll can not work together, if you want to expend all the items you should use expendAll prop only , otherwase if you want only specific items , provide initialExpendedItems prop.</Callout>
+
+
+### TreeViewElement
+
+The TreeViewElement object accepts the following props:
+
+<MDXTable
+  data={[
+    {
+      props: { value: "field" },
+      type: { value: "type" },
+      defaultValue: { value: "default Value" },
+    },
+    {
+      props: { value: "id", required: true },
+      type: { value: ["string"] },
+      defaultValue: { value: "--" },
+    },
+    {
+      props: { value: "name", required: true },
+      type: { value: ["string"] },
+      defaultValue: { value: "--" },
+    },
+    {
+      props: { value: "children" },
+      type: { value: ["TreeViewElement[]"] },
+      defaultValue: { value: "--" },
+    },
+    {
+      props: { value: "isSelectable" },
+      type: { value: ["boolean"] },
+      defaultValue: { value: "--" },
+    },
+  ]}
+/>
+
+## Accessibility
+
+Currently, the TreeView component is fully accessible and supports keyboard navigation.
+
+## Keyboard Navigation
+
+<MDXTable
+  data={[
+    { key: { value: "key" }, description: { value: "Description" } },
+    {
+      key: { value: "Tab" },
+      description: { value: "enter a nested folder" },
+    },
+    {
+      key: { value: "Tab + Shift" },
+      description: { value: "exit the current selected folder" },
+    },
+    {
+      key: { value: "ArrowDown" },
+      description: { value: "Increments by one step horzintanly" },
+    },
+    {
+      key: { value: "ArrowUp" },
+      description: { value: "Decrements by one step horzintanly" },
+    },
+    {
+      key: { value: "Enter" },
+      description: { value: "Opens/Close a folder , select a file" },
+    },
+  ]}
+/>
+
+
+## Usage
+
+The TreeView component has two different ways to be used, that you can choose , based on your choice , that you have picked in the installation [section](#installation).
+
+
+
+<Tabs items={['Tree View', 'Tree View API']}>
+
+    <Tab value="Tree View">
+```jsx
+import { TreeView } from "@/components/extension/tree-view";
+const elements = [
+  {
+    id: "1",
+    name: "components",
+    children: [
+      {
+        id: "2",
+        name: "extension",
+        children: [
+          {
+            id: "3",
+            name: "tree-view.tsx",
+          },
+          {
+            id: "4",
+            name: "tree-view-api.tsx",
+          },
+        ],
+      },
+      {
+        id: "5",
+        name: "dashboard-tree.tsx",
+      },
+    ],
+  },
+];
+export default function TreeViewExample() {
+  return (
+    <TreeView
+      elements={elements}
+      initialSelectedId="3"
+      initialExpendedItems={["1", "2"]}
+    />
+  );
+}
+
+        ```
+    </Tab>
+
+    <Tab value="Tree View API">
+```jsx
+import {
+  Tree,
+  Folder ,
+  File ,
+  CollapseButton
+} from "@/components/extension/tree-view-api";
+const elements = [
+  {
+    id: "1",
+    name: "components",
+    children: [
+      {
+        id: "2",
+        name: "extension",
+        children: [
+          {
+            id: "3",
+            name: "tree-view.tsx",
+          },
+          {
+            id: "4",
+            name: "tree-view-api.tsx",
+          },
+        ],
+      },
+      {
+        id: "5",
+        name: "dashboard-tree.tsx",
+      },
+    ],
+  },
+]
+<Tree
+  initialSelectedId={"dashboard-tree.tsx"}
+  initialExpendedItems={["components"]}
+>
+  <Folder element="components">
+    <Folder element="extension">
+      <File element="tree-view.tsx">
+        <span>tree-view.tsx</span>
+      </File>
+      <File element="tree-view-api.tsx">
+        <span>tree-view-api.tsx</span>
+      </File>
+    </Folder>
+    <File element="dashboard-tree.tsx">
+      <span>dashboard-tree.tsx</span>
+    </File>
+  </Folder>
+</Tree>
+
+        ```
+    </Tab>
+</Tabs>
+
+
+
+
+## Further Reading
+
+
+- [Shadcn-Extension Tree View UI Accordion](https://shadcn-extension.vercel.app/docs/tree-view)
+
+

@@ -1,12 +1,13 @@
 "use client"
 
 import Link from "next/link"
+import { TreeViewDemo_V2 } from "@/components/demo/tree-view-demo-2"
 
 export default function TestPage (){
     return (
         <>
             <div>
-                expand-from-center
+                <TreeViewDemo_V2></TreeViewDemo_V2>
             </div>
             <Link 
                 href={"https://www.google.com"}
