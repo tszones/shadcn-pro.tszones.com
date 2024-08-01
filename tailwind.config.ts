@@ -1,5 +1,8 @@
 import type { Config } from "tailwindcss"
 import { createPreset } from 'fumadocs-ui/tailwind-plugin';
+import { default as flattenColorPalette } from 'tailwindcss/lib/util/flattenColorPalette'
+import svgToDataUri from 'mini-svg-data-uri'
+
 
 const config = {
   darkMode: ["class"],
@@ -85,6 +88,18 @@ const config = {
     },
   },
   plugins: [
+    function ({ matchUtilities, theme, addUtilities }: any) {
+      matchUtilities(
+        {
+          dots: (value: any) => ({
+            backgroundImage: `url("${svgToDataUri(
+              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="none"><circle fill="${value}" id="pattern-circle" cx="10" cy="10" r="1.6257413380501518"></circle></svg>`
+            )}")`
+          })
+        },
+        { values: flattenColorPalette(theme('backgroundColor')), type: 'color' }
+      )
+    },
     require("tailwindcss-animate"),
     require('tailwind-custom-utilities'),
 ],
