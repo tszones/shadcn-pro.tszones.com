@@ -2,12 +2,13 @@
 
 import Link from "next/link"
 import { StarRatingDemo } from "@/components/demo/star-rating-demo"
+import { Feedback } from "@/components/block/feedback"
 
 export default function TestPage (){
     return (
         <>
             <div>
-                <StarRatingDemo></StarRatingDemo>
+                <Feedback></Feedback>
             </div>
             <Link 
                 href={"https://www.google.com"}
