@@ -1,0 +1,289 @@
+---
+title: Star Rating
+description: Star Rating
+---
+
+import { StarRatingDemo } from "@/components/demo/star-rating-demo"
+import { StarRatingColorDemo } from "@/components/demo/star-rating-color-demo"
+import { StarRatingHeartDemo } from "@/components/demo/star-rating-heart-demo"
+
+<Tabs items={['Preview', 'Code']}>
+    <Tab value="Preview">
+        <div className="flex-row-center pt-4">
+            <StarRatingDemo></StarRatingDemo>
+        </div>
+    </Tab>
+
+    <Tab value="Code">
+```jsx title="star-rating-demo.tsx"
+"use client"
+
+import * as React from 'react'
+import { StarRating } from '@/components/ui-pro/star-rating'
+
+export function StarRatingDemo() {
+   const [value, setValue] = React.useState<number>(3)
+   return <StarRating value={value} setValue={setValue} />
+}
+```
+    </Tab>
+
+</Tabs>
+
+## Installation
+
+<Steps>
+<Step>
+
+### Copy and paste the following code into your project.
+
+<CodeBlockWrapper>
+```jsx
+import type { Dispatch, SetStateAction } from 'react'
+import React from 'react'
+import type { LucideIcon, LucideProps } from 'lucide-react'
+import { StarIcon } from 'lucide-react'
+import { cn } from '@/lib/utils';
+
+interface StarWrapperProps {
+   value?: number
+   setValue?: Dispatch<SetStateAction<number>>
+   numStars?: number
+   icon?: LucideIcon
+   disabled?: boolean
+   wrapperProps?: React.HTMLAttributes<HTMLDivElement>
+   iconProps?: LucideProps
+   showcase?: boolean
+}
+
+function StarRating({
+   numStars = 5,
+   icon,
+   setValue,
+   value,
+   disabled,
+   showcase,
+   iconProps = {},
+   wrapperProps = {},
+}: StarWrapperProps) {
+   const { className: wrapperClassName, ...restWrapperProps } = wrapperProps
+   const { className: iconClassName, ...restIconProps } = iconProps
+   const IconComponent = icon
+
+   return (
+      <div className={cn('flex items-center gap-1', wrapperClassName)} {...restWrapperProps}>
+         {Array.from({ length: numStars }, (_, i) => {
+            const isRated = i < value!
+            const styledIconProps: LucideProps = {
+               onMouseEnter: () => !showcase && !disabled && setValue!(i + 1),
+               className: cn('fill-primary stroke-primary size-6', {
+                  'opacity-50 pointer-events-none': disabled,
+                  'transition-transform duration-300 hover:scale-110': !disabled && !showcase,
+                  '!fill-muted !stroke-muted': !isRated,
+               }, iconClassName),
+               ...restIconProps,
+            }
+            return (
+               <div key={i}>
+                  {IconComponent
+                     ? (
+                           <IconComponent {...styledIconProps} />
+                        )
+                     : (
+                           <StarIcon {...styledIconProps} />
+                        )}
+               </div>
+            )
+         })}
+      </div>
+   )
+}
+
+export { StarRating }
+
+```
+</CodeBlockWrapper>
+
+</Step>
+ 
+<Step>
+### Update the import paths to match your project setup.
+</Step>
+</Steps>
+
+
+## Usage
+
+```tsx
+import { StarRating } from "~/components/ui/star-rating"
+```
+
+```tsx
+const [value, setValue] = React.useState(3)
+
+<StarRating value={value} setValue={setValue} />
+```
+
+## Colored icons
+
+<Tabs items={['Preview', 'Code']}>
+    <Tab value="Preview">
+        <div className="flex-row-center pt-4">
+            <StarRatingColorDemo></StarRatingColorDemo>
+        </div>
+    </Tab>
+
+    <Tab value="Code">
+```jsx title="star-rating-color-demo.tsx"
+"use client"
+
+import * as React from 'react'
+import { StarRating } from '@/components/ui-pro/star-rating'
+
+export function StarRatingColorDemo() {
+   const [value, setValue] = React.useState<number>(3)
+   return <StarRating value={value} setValue={setValue} iconProps={{ className: 'fill-yellow-500 stroke-yellow-500' }} />
+}
+
+```
+    </Tab>
+
+</Tabs>
+
+
+## Different icon
+
+
+<Tabs items={['Preview', 'Code']}>
+    <Tab value="Preview">
+        <div className="flex-row-center pt-4">
+            <StarRatingHeartDemo></StarRatingHeartDemo>
+        </div>
+    </Tab>
+
+    <Tab value="Code">
+```jsx title="star-rating-heart-demo.tsx"
+    "use client"
+
+import * as React from 'react'
+import { Heart } from 'lucide-react'
+import { StarRating } from '@/components/ui-pro/star-rating'
+
+export function StarRatingHeartDemo() {
+   const [value, setValue] = React.useState<number>(3)
+   return <StarRating value={value} setValue={setValue} icon={Heart} />
+}
+
+```
+    </Tab>
+
+</Tabs>
+
+## API Reference
+
+<MDXTable
+  data={[
+     {
+      property: {
+        value: "property",
+      },
+      description: {
+        value: "description",
+      },
+      default: {
+        value: "default",
+      },
+    },
+    {
+      property: {
+        value: "value",
+      },
+      description: {
+        value: "The value of the stars",
+      },
+      default: {
+        value: "-",
+      },
+    },
+    {
+      property: {
+        value: "setValue",
+      },
+      description: {
+        value: "A function to set the value of the stars",
+      },
+      default: {
+        value: "-",
+      },
+    },
+    {
+      property: {
+        value: "numStars",
+      },
+      description: {
+        value: "Number of stars to render",
+      },
+      default: {
+        value: "5",
+      },
+    },
+    {
+      property: {
+        value: "icon",
+      },
+      description: {
+        value: "The icon to use for the stars",
+      },
+      default: {
+        value: "-",
+      },
+    },
+    {
+      property: {
+        value: "disabled",
+      },
+      description: {
+        value: "Prevents setting values, lower the opacity and disable hover",
+      },
+      default: {
+        value: "false",
+      },
+    },
+    {
+      property: {
+        value: "wrapperProps",
+      },
+      description: {
+        value: "Additional props for the wrapper div",
+      },
+      default: {
+        value: "-",
+      },
+    },
+    {
+      property: {
+        value: "iconProps",
+      },
+      description: {
+        value: "Additional props for the icon component",
+      },
+      default: {
+        value: "-",
+      },
+    },
+    {
+      property: {
+        value: "showcase",
+      },
+      description: {
+        value: "Prevents setting values and hover (does not affect opacity)",
+      },
+      default: {
+        value: "false",
+      },
+    },
+]}
+/>
+
+
+Every property is optional*

@@ -1,11 +1,13 @@
 "use client"
 
 import Link from "next/link"
+import { StarRatingDemo } from "@/components/demo/star-rating-demo"
 
 export default function TestPage (){
     return (
         <>
             <div>
+                <StarRatingDemo></StarRatingDemo>
             </div>
             <Link 
                 href={"https://www.google.com"}
