@@ -13,6 +13,7 @@ import {TabsDemoV1} from '@/components/demo/tabs-demo-v1'
     </Tab>
 
     <Tab value="Code">
+ <CodeBlockWrapper>
 ```jsx title="tabs-demo-v1.tsx"
 "use client"
 
@@ -69,9 +70,12 @@ export function TabsDemoV1() {
 }
 
 ```
+    
+</CodeBlockWrapper>   
     </Tab>
 
     <Tab value="Installation">
+<CodeBlockWrapper>
 ```jsx title="tabs_v1.tsx"
 "use client";
 
@@ -131,5 +135,9 @@ TabsContent.displayName = TabsPrimitive.Content.displayName;
 
 export { Tabs, TabsList, TabsTrigger, TabsContent };
 ```
+    
+</CodeBlockWrapper>
+
+    
     </Tab>
 </Tabs>

@@ -22,6 +22,7 @@ A tree view that assembles all the functionalities of the Accordion component to
   </div>
   </Tab>
   <Tab value="Code">
+<CodeBlockWrapper>
 ```jsx
 "use client";
 
@@ -106,6 +107,10 @@ export const TreeViewDemo = () => {
   );
 };
 ```
+ 
+</CodeBlockWrapper>
+
+ 
   </Tab>
 </Tabs>
 
@@ -131,6 +136,7 @@ npx shadcn-ui@latest add scroll-area
 
 <Tabs items={['Tree view', 'Tree view api']}>
   <Tab value="Tree view">
+<CodeBlockWrapper>
 ```jsx
 "use client";
 
@@ -263,8 +269,14 @@ export const TreeItem = forwardRef<
 TreeItem.displayName = "TreeItem";
 
 ```
+  
+</CodeBlockWrapper>
+  
+  
   </Tab>
   <Tab value="Tree view api">
+
+<CodeBlockWrapper>
 ```jsx
 "use client";
 
@@ -658,6 +670,10 @@ CollapseButton.displayName = "CollapseButton";
 
 export { Tree, Folder, File, CollapseButton, type TreeViewElement };
 ```
+  
+</CodeBlockWrapper>
+
+  
   </Tab>
 </Tabs>
 
@@ -880,6 +896,7 @@ The TreeView component has two different ways to be used, that you can choose , 
 <Tabs items={['Tree View', 'Tree View API']}>
 
     <Tab value="Tree View">
+<CodeBlockWrapper>
 ```jsx
 import { TreeView } from "@/components/extension/tree-view";
 const elements = [
@@ -919,9 +936,15 @@ export default function TreeViewExample() {
 }
 
         ```
+    
+	
+</CodeBlockWrapper>
+    
     </Tab>
 
     <Tab value="Tree View API">
+
+<CodeBlockWrapper>
 ```jsx
 import {
   Tree,
@@ -975,6 +998,10 @@ const elements = [
 </Tree>
 
         ```
+    
+</CodeBlockWrapper>
+
+    
     </Tab>
 </Tabs>
 
