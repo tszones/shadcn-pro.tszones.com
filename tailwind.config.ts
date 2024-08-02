@@ -1,25 +1,25 @@
-import type { Config } from "tailwindcss"
-import { createPreset } from 'fumadocs-ui/tailwind-plugin';
-import svgToDataUri from 'mini-svg-data-uri'
-const flattenColorPalette = require('tailwindcss/lib/util/flattenColorPalette');
+import type { Config } from "tailwindcss";
+import { createPreset } from "fumadocs-ui/tailwind-plugin";
+import svgToDataUri from "mini-svg-data-uri";
+const flattenColorPalette = require("tailwindcss/lib/util/flattenColorPalette");
 
 const config = {
   darkMode: ["class"],
   presets: [
     createPreset({
-      preset: 'default',
-    })
+      preset: "default",
+    }),
   ],
   content: [
-    './pages/**/*.{ts,tsx}',
-    './components/**/*.{ts,tsx}',
-    './app/**/*.{ts,tsx}',
-    './src/**/*.{ts,tsx,mdx}',
-    './content/**/*.{ts,tsx,mdx}',
-    './mdx-components.{ts,tsx}',
-    './node_modules/fumadocs-ui/dist/**/*.js',
-    './src/mdx-components.tsx',
-	],
+    "./pages/**/*.{ts,tsx}",
+    "./components/**/*.{ts,tsx}",
+    "./app/**/*.{ts,tsx}",
+    "./src/**/*.{ts,tsx,mdx}",
+    "./content/**/*.{ts,tsx,mdx}",
+    "./mdx-components.{ts,tsx}",
+    "./node_modules/fumadocs-ui/dist/**/*.js",
+    "./src/mdx-components.tsx",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -71,6 +71,11 @@ const config = {
         sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
+        blink: {
+          "0%": { opacity: "0.2" },
+          "20%": { opacity: "1" },
+          "100%": { opacity: "0.2" },
+        },
         "accordion-down": {
           from: { height: "0" },
           to: { height: "var(--radix-accordion-content-height)" },
@@ -83,6 +88,7 @@ const config = {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        'blink': 'blink 1.4s infinite both',
       },
     },
   },
@@ -93,15 +99,15 @@ const config = {
           dots: (value: any) => ({
             backgroundImage: `url("${svgToDataUri(
               `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="none"><circle fill="${value}" id="pattern-circle" cx="10" cy="10" r="1.6257413380501518"></circle></svg>`
-            )}")`
-          })
+            )}")`,
+          }),
         },
-        { values: flattenColorPalette(theme('backgroundColor')), type: 'color' }
-      )
+        { values: flattenColorPalette(theme("backgroundColor")), type: "color" }
+      );
     },
     require("tailwindcss-animate"),
-    require('tailwind-custom-utilities'),
-],
-} satisfies Config
+    require("tailwind-custom-utilities"),
+  ],
+} satisfies Config;
 
-export default config
+export default config;
