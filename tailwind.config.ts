@@ -1,8 +1,7 @@
 import type { Config } from "tailwindcss"
 import { createPreset } from 'fumadocs-ui/tailwind-plugin';
-import { default as flattenColorPalette } from 'tailwindcss/lib/util/flattenColorPalette'
 import svgToDataUri from 'mini-svg-data-uri'
-
+const flattenColorPalette = require('tailwindcss/lib/util/flattenColorPalette');
 
 const config = {
   darkMode: ["class"],
