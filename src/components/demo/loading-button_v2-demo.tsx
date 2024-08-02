@@ -6,7 +6,7 @@ export const LoadingButtonV2Demo = () => {
     return (
         <div>
             <LoadingButtonV2
-                variant="secondary"
+                variant="destructive"
                 loading
             >Submit</LoadingButtonV2>	
         </div>
