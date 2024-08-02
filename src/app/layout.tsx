@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 // import { Inter } from "next/font/google";
 import "./globals.css";
 import { RootProvider } from 'fumadocs-ui/provider';
+import GoogleAnalytics from "@/components/google-analytics";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({
   return (
     <html lang="en">
         <body>
+        <GoogleAnalytics />
         <RootProvider>
           {children}
         </RootProvider>
