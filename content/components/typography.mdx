@@ -1,0 +1,107 @@
+---
+title: Typography
+description: Typography
+---
+
+import { TypographyDemo } from "@/components/demo/typography-demo"
+
+<Tabs items={['Preview', 'Code']}>
+    <Tab value="Preview">
+        <div className="flex-row-center pt-4">
+            <TypographyDemo></TypographyDemo>
+        </div>
+    </Tab>
+
+    <Tab value="Code">
+        <CodeBlockWrapper>
+
+```json doc-gen:file
+{
+  "file": "./src/components/demo/typography-demo.tsx",
+    "codeblock": {
+    "lang": "tsx",
+    "meta": "title=\"typography-demo.tsx\""
+  }
+}
+````
+        </CodeBlockWrapper>
+
+    </Tab>
+
+</Tabs>
+
+
+<Steps>
+
+<Step>
+### Copy and paste the following code into your project.
+
+<CodeBlockWrapper>
+```js title="tailwind.config.ts"
+  plugins: [
+    function ({ addUtilities }) {
+      const newUtilities = {
+        '.typography-h1': {
+          '@apply scroll-m-20 text-4xl font-extrabold tracking-tight lg:text-5xl': {},
+        },
+        '.typography-h2': {
+          '@apply scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 mt-10': {},
+        },
+        '.typography-h3': {
+          '@apply scroll-m-20 text-2xl font-semibold tracking-tight mt-8': {},
+        },
+        '.typography-h4': {
+          '@apply scroll-m-20 text-xl font-semibold tracking-tight': {},
+        },
+        '.typography-p': {
+          '@apply leading-7 [&:not(:first-child)]:mt-6': {},
+        },
+        '.typography-blockquote': {
+          '@apply mt-6 border-l-2 pl-6 italic': {},
+        },
+        '.typography-ul': {
+          '@apply my-6 ml-6 list-disc [&>li]:mt-2': {},
+        },
+        '.typography-inline-code': {
+          '@apply relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm font-semibold': {},
+        },
+        '.typography-lead': {
+          '@apply text-xl text-muted-foreground': {},
+        },
+        '.typography-large': {
+          '@apply text-lg font-semibold': {},
+        },
+        '.typography-small': {
+          '@apply text-sm font-medium leading-none': {},
+        },
+        '.typography-muted': {
+          '@apply text-sm text-muted-foreground': {},
+        },
+        '.typography-a': {
+          '@apply font-medium text-primary underline underline-offset-4': {},
+        },
+        '.typography-tr': {
+          '@apply m-0 border-t p-0 even:bg-muted': {},
+        },
+        '.typography-td': {
+          '@apply border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right': {},
+        },
+        '.typography-th': {
+          '@apply border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right': {},
+        }
+      };
+      addUtilities(newUtilities, ['responsive', 'hover']);
+    },
+  ],
+```
+</CodeBlockWrapper>
+
+</Step>
+
+<Step>
+### Import the typography classes into your project.
+
+</Step>
+
+</Steps>
+
