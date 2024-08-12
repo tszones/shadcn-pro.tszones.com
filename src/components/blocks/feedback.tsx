@@ -3,7 +3,6 @@
 import { Angry, Check, Frown, Laugh, Loader2, Smile } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { twMerge } from 'tailwind-merge'
 import { cn } from '@/lib/utils'
 
 const feedback = [
@@ -61,7 +60,7 @@ export const Feedback = () => {
       layout
       initial={{ borderRadius: '2rem' }}
       animate={happiness ? { borderRadius: '0.5rem' } : { borderRadius: '2rem' }}
-      className={twMerge(
+      className={cn(
         'w-fit overflow-hidden border py-2 shadow-sm dark:border-neutral-800 dark:bg-neutral-950'
       )}>
       <span className="flex items-center justify-center gap-3 pl-4 pr-2">
@@ -70,7 +69,7 @@ export const Feedback = () => {
           {feedback.map((e) => (
             <button
               onClick={() => setHappiness((prev) => (e.happiness === prev ? null : e.happiness))}
-              className={twMerge(
+              className={cn(
                 happiness === e.happiness
                   ? 'bg-blue-100 stroke-blue-500 dark:bg-sky-900 dark:stroke-sky-500'
                   : 'stroke-neutral-500 dark:stroke-neutral-400',

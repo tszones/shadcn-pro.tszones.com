@@ -1,9 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import { StarRatingDemo } from "@/components/demo/star-rating-demo"
-import { Feedback } from "@/components/block/feedback"
-import { Metadata } from "next"
 
 export default function TestPage() {
     return (
