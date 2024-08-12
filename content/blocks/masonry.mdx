@@ -4,8 +4,9 @@ description: Masonry
 ---
 
 import { Masonry } from "@/components/blocks/masonry"
+import { Masonry_V2 } from "@/components/blocks/masonry_v2"
 
-## Masonry_V1
+## Masonry_V1(Grid)
 
 <Tabs items={['Preview', 'Code']}>
     <Tab value="Preview">
@@ -29,3 +30,28 @@ import { Masonry } from "@/components/blocks/masonry"
     </Tab>
 </Tabs>
 
+
+
+## Masonry_V2(flex)
+
+<Tabs items={['Preview', 'Code']}>
+    <Tab value="Preview">
+        <div className="flex-row-center pt-4">
+            <Masonry_V2></Masonry_V2>
+        </div>
+    </Tab>
+    <Tab value="Code">
+<CodeBlockWrapper>
+
+```json doc-gen:file
+{
+  "file": "./src/components/blocks/masonry_v2.tsx",
+    "codeblock": {
+    "lang": "tsx",
+    "meta": "title=\"masonry_v2.tsx\""
+  }
+}
+```
+</CodeBlockWrapper>
+    </Tab>
+</Tabs>
