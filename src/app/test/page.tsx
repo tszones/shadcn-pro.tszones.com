@@ -3,11 +3,14 @@
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
+import MultiSelectTest from "@/components/demo/multi-select-demo"
+
 
 
 export default function TestPage() {
     return (
         <>
+            <MultiSelectTest />
             <span className="loading flex items-center">
                 <span className="bg-white w-1 h-1 rounded-full inline-block mx-0.5 animate-blink" />
                 <span className="bg-white w-1 h-1 rounded-full inline-block mx-0.5 animate-blink delay-200" />
