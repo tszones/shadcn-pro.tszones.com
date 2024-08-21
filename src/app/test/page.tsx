@@ -31,29 +31,60 @@ const FormSchema = z.object({
     size: z.string().min(1, "请选择一个尺寸"),
   }),
   ...(formConfig.showQuantity && { quantity: z.string().min(1, "请选择数量") }),
-}).refine((data) => {
-  if (data.size === "463612") {
-    return ["bust", "waist", "hip", "hollowToFloor", "height", "extraLength"].every(
-      (field) => {
-        const value = data[field as keyof typeof data];
-        if (!value) return false;
-        const numValue = parseFloat(value);
-        switch (field) {
-          case "bust": return numValue >= 30 && numValue <= 68;
-          case "waist": return numValue >= 22 && numValue <= 70;
-          case "hip": return numValue >= 30 && numValue <= 75;
-          case "hollowToFloor": return numValue >= 40 && numValue <= 70;
-          case "height": return numValue >= 50 && numValue <= 90;
-          case "extraLength": return numValue >= 0 && numValue <= 6;
-          default: return true;
-        }
-      }
-    );
-  }
-  return true;
+  bust: z.string(),
+  waist: z.string(),
+  hip: z.string(),
+  hollowToFloor: z.string(),
+  height: z.string(),
+  extraLength: z.string(),
+})
+.refine((data) => {
+  if (data.size !== "463612") return true;
+  const value = parseFloat(data.bust);
+  return !isNaN(value) && value >= 30 && value <= 68;
 }, {
-  message: "请确保所有测量字段都已填写，并且在指定范围内",
-  path: ["bust", "waist", "hip", "hollowToFloor", "height", "extraLength"],
+  message: "胸围必须在30到68厘米之间",
+  path: ["bust"],
+})
+.refine((data) => {
+  if (data.size !== "463612") return true;
+  const value = parseFloat(data.waist);
+  return !isNaN(value) && value >= 22 && value <= 70;
+}, {
+  message: "腰围必须在22到70厘米之间",
+  path: ["waist"],
+})
+.refine((data) => {
+  if (data.size !== "463612") return true;
+  const value = parseFloat(data.hip);
+  return !isNaN(value) && value >= 30 && value <= 75;
+}, {
+  message: "臀围必须在30到75厘米之间",
+  path: ["hip"],
+})
+.refine((data) => {
+  if (data.size !== "463612") return true;
+  const value = parseFloat(data.hollowToFloor);
+  return !isNaN(value) && value >= 40 && value <= 70;
+}, {
+  message: "空心到地板的距离必须在40到70厘米之间",
+  path: ["hollowToFloor"],
+})
+.refine((data) => {
+  if (data.size !== "463612") return true;
+  const value = parseFloat(data.height);
+  return !isNaN(value) && value >= 50 && value <= 90;
+}, {
+  message: "身高必须在50到90厘米之间",
+  path: ["height"],
+})
+.refine((data) => {
+  if (data.size !== "463612") return true;
+  const value = parseFloat(data.extraLength);
+  return !isNaN(value) && value >= 0 && value <= 6;
+}, {
+  message: "额外长度必须在0到6厘米之间",
+  path: ["extraLength"],
 });
 
 const ColorRadioItem = ({ item }: {item: SwatchDataRoot2}) => (
@@ -201,17 +232,25 @@ export default function TestPage() {
 
             {selectSize === "463612" && (
               <div className="space-y-4">
-                {["bust", "waist", "hip", "hollowToFloor", "height", "extraLength"].map((field) => (
+                {[
+                  { name: "bust", label: "胸围", hint: "请输入30到68厘米之间的数值" },
+                  { name: "waist", label: "腰围", hint: "请输入22到70厘米之间的数值" },
+                  { name: "hip", label: "臀围", hint: "请输入30到75厘米之间的数值" },
+                  { name: "hollowToFloor", label: "空心到地板", hint: "请输入40到70厘米之间的数值" },
+                  { name: "height", label: "身高", hint: "请输入50到90厘米之间的数值" },
+                  { name: "extraLength", label: "额外长度", hint: "请输入0到6厘米之间的数值" },
+                ].map((field) => (
                   <FormField
-                    key={field}
+                    key={field.name}
                     control={form.control}
-                    name={field as keyof z.infer<typeof FormSchema>}
+                    name={field.name as keyof z.infer<typeof FormSchema>}
                     render={({ field: inputField }) => (
                       <FormItem>
-                        <FormLabel>{field.charAt(0).toUpperCase() + field.slice(1).replace(/([A-Z])/g, ' $1')}</FormLabel>
+                        <FormLabel>{field.label}</FormLabel>
                         <FormControl>
-                          <input {...inputField} className="w-full p-2 border rounded" required />
+                          <input {...inputField} className="w-full p-2 border rounded" />
                         </FormControl>
+                        <p className="text-sm text-gray-500 mt-1">{field.hint}</p>
                         <FormMessage />
                       </FormItem>
                     )}
