@@ -24,68 +24,56 @@ const formConfig = {
   showQuantity: true,
 };
 
-const FormSchema = z.object({
-  ...(formConfig.showFabric && { fabric: z.string().min(1, "请选择一种面料") }),
-  ...(formConfig.showColor && { color: z.string().min(1, "请选择一个颜色") }),
-  ...(formConfig.showSize && {
-    size: z.string().min(1, "请选择一个尺寸"),
-  }),
-  ...(formConfig.showQuantity && { quantity: z.string().min(1, "请选择数量") }),
-  bust: z.string(),
-  waist: z.string(),
-  hip: z.string(),
-  hollowToFloor: z.string(),
-  height: z.string(),
-  extraLength: z.string(),
-})
-.refine((data) => {
-  if (data.size !== "463612") return true;
-  const value = parseFloat(data.bust);
-  return !isNaN(value) && value >= 30 && value <= 68;
-}, {
-  message: "胸围必须在30到68厘米之间",
-  path: ["bust"],
-})
-.refine((data) => {
-  if (data.size !== "463612") return true;
-  const value = parseFloat(data.waist);
-  return !isNaN(value) && value >= 22 && value <= 70;
-}, {
-  message: "腰围必须在22到70厘米之间",
-  path: ["waist"],
-})
-.refine((data) => {
-  if (data.size !== "463612") return true;
-  const value = parseFloat(data.hip);
-  return !isNaN(value) && value >= 30 && value <= 75;
-}, {
-  message: "臀围必须在30到75厘米之间",
-  path: ["hip"],
-})
-.refine((data) => {
-  if (data.size !== "463612") return true;
-  const value = parseFloat(data.hollowToFloor);
-  return !isNaN(value) && value >= 40 && value <= 70;
-}, {
-  message: "空心到地板的距离必须在40到70厘米之间",
-  path: ["hollowToFloor"],
-})
-.refine((data) => {
-  if (data.size !== "463612") return true;
-  const value = parseFloat(data.height);
-  return !isNaN(value) && value >= 50 && value <= 90;
-}, {
-  message: "身高必须在50到90厘米之间",
-  path: ["height"],
-})
-.refine((data) => {
-  if (data.size !== "463612") return true;
-  const value = parseFloat(data.extraLength);
-  return !isNaN(value) && value >= 0 && value <= 6;
-}, {
-  message: "额外长度必须在0到6厘米之间",
-  path: ["extraLength"],
-});
+const createDynamicFormSchema = (config: typeof formConfig) => {
+  const schemaFields: Record<string, z.ZodTypeAny> = {};
+
+  if (config.showFabric) {
+    schemaFields.fabric = z.string().min(1, "请选择一种面料");
+  }
+  if (config.showColor) {
+    schemaFields.color = z.string().min(1, "请选择一个颜色");
+  }
+  if (config.showSize) {
+    schemaFields.size = z.string().min(1, "请选择一个尺寸");
+  }
+  if (config.showQuantity) {
+    schemaFields.quantity = z.string().min(1, "请选择数量");
+  }
+
+  // 添加自定义尺寸字段
+  const customSizeFields = [
+    "bust", "waist", "hip", "hollowToFloor", "height", "extraLength"
+  ];
+  customSizeFields.forEach(field => {
+    schemaFields[field] = z.string().optional();
+  });
+
+  return z.object(schemaFields).superRefine((data, ctx) => {
+    if (data.size === "463612") {
+      const customSizeValidation = [
+        { name: "bust", min: 30, max: 68 },
+        { name: "waist", min: 22, max: 70 },
+        { name: "hip", min: 30, max: 75 },
+        { name: "hollowToFloor", min: 40, max: 70 },
+        { name: "height", min: 50, max: 90 },
+        { name: "extraLength", min: 0, max: 6 },
+      ];
+
+      customSizeValidation.forEach(field => {
+        const value = parseFloat(data[field.name as keyof typeof data] as string);
+        if (isNaN(value) || value < field.min || value > field.max) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `${field.name} 必须在 ${field.min} 到 ${field.max} 厘米之间`,
+            path: [field.name],
+          });
+        }
+      });
+    }
+  });
+};
+
+const FormSchema = createDynamicFormSchema(formConfig);
 
 const ColorRadioItem = ({ item }: {item: SwatchDataRoot2}) => (
   <FormItem className="flex items-center space-x-3 space-y-0">
@@ -132,15 +120,7 @@ export default function TestPage() {
     defaultValues: {
       ...(formConfig.showFabric && { fabric: "" }),
       ...(formConfig.showColor && { color: "" }),
-      ...(formConfig.showSize && { 
-        size: "",
-        bust: "",
-        waist: "",
-        hip: "",
-        hollowToFloor: "",
-        height: "",
-        extraLength: "",
-      }),
+      ...(formConfig.showSize && { size: "" }),
       ...(formConfig.showQuantity && { quantity: "" }),
     }
   })
@@ -152,7 +132,27 @@ export default function TestPage() {
   console.log('💚selectSize', selectSize);
 
   function onSubmit(data: z.infer<typeof FormSchema>) {
-    console.log('💚data', data);
+    const { size, ...otherData } = data;
+    let submissionData: any = { ...otherData, size };
+
+    if (size === "463612") {
+      submissionData.customSize = {
+        bust: data.bust,
+        waist: data.waist,
+        hip: data.hip,
+        hollowToFloor: data.hollowToFloor,
+        height: data.height,
+        extraLength: data.extraLength
+      };
+    }
+
+    // 移除未使用的自定义尺寸字段
+    ['bust', 'waist', 'hip', 'hollowToFloor', 'height', 'extraLength'].forEach(field => {
+      delete submissionData[field];
+    });
+
+    console.log('💚提交的数据', submissionData);
+    // 这里可以添加发送数据到服务器的逻辑
   }
 
   return (
