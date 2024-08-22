@@ -4,6 +4,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import { RootProvider } from 'fumadocs-ui/provider';
 import GoogleAnalytics from "@/components/google-analytics";
+import { Providers } from "@/components/providers";
 
 // const inter = Inter({ subsets: ["latin"] });
 
@@ -18,13 +19,15 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <Providers>
+      <html lang="en">
         <body>
-        <GoogleAnalytics />
-        <RootProvider>
-          {children}
-        </RootProvider>
+          <GoogleAnalytics />
+          <RootProvider>
+            {children}
+          </RootProvider>
         </body>
       </html>
+    </Providers>
   );
 }
