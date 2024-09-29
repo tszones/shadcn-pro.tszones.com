@@ -1,7 +1,7 @@
 import createMDX from 'fumadocs-mdx/config';
 import { remarkInstall } from 'fumadocs-docgen';
 import { remarkDocGen, fileGenerator } from 'fumadocs-docgen';
-
+import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
 
 const withMDX = createMDX({
   include: ['./**/*.{md,mdx,json}'],
@@ -29,5 +29,10 @@ const config = {
     return config;
   },
 };
+
+if (process.env.NODE_ENV === "development") {
+  await setupDevPlatform();
+}
+
 
 export default withMDX(config);

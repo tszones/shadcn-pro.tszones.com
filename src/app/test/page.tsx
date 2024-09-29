@@ -1,10 +1,11 @@
 "use client"
 
+export const runtime = "edge";
+
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import Image from "next/image"
 import MultiSelectTest from "@/components/demo/multi-select-demo"
-
 
 
 export default function TestPage() {
