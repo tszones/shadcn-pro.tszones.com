@@ -25,6 +25,7 @@ const config = {
       poll: 1000,
       aggregateTimeout: 300,
     }
+    config.resolve.fallback = { fs: false, path: false };
 
     return config;
   },
