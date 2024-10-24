@@ -4,7 +4,7 @@ import { DocsPage, DocsBody } from 'fumadocs-ui/page';
 import { notFound } from 'next/navigation';
 import { DocsPageFooter } from '@/components/docs-page-footer';
 
-export const runtime = "edge";
+
 
 export default async function Page({
   params,
