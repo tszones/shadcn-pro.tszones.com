@@ -3,7 +3,7 @@ services:
   nextjs:
     image: ghcr.io/tszones/shadcn-pro.tszones.com:latest
     ports:
-      - 3001:3000
+      - 7788:3000
     environment:
       - NODE_ENV=production
       - PORT=3000
