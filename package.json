@@ -9,7 +9,10 @@
     "lint": "next lint",
     "pages:build": "npx @cloudflare/next-on-pages",
     "preview": "npm pages:build && wrangler pages dev",
-    "deploy": "npm pages:build && wrangler pages deploy"
+    "deploy": "npm pages:build && wrangler pages deploy",
+    "docker:build": "docker build -t shadcn-pro.tszones.com .",
+    "docker:tag": "docker tag shadcn-pro.tszones.com ghcr.io/tszones/shadcn-pro.tszones.com:latest",
+    "docker:push": "docker tag shadcn-pro.tszones.com ghcr.io/tszones/shadcn-pro.tszones.com:latest && docker push ghcr.io/tszones/shadcn-pro.tszones.com:latest"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",

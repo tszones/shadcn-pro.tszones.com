@@ -3,10 +3,13 @@ import { remarkInstall } from 'fumadocs-docgen';
 import { remarkDocGen, fileGenerator } from 'fumadocs-docgen';
 import { setupDevPlatform } from "@cloudflare/next-on-pages/next-dev";
 
+const isProd = process.env.NODE_ENV === "production";
+
 const withMDX = createMDX({
   include: ['./**/*.{md,mdx,json}'],
   mdxOptions: {
-    lastModifiedTime: 'git',
+    // Avoid git dependency inside Docker builds.
+    lastModifiedTime: isProd ? 'none' : 'git',
     remarkPlugins: [
       [remarkInstall],
       [remarkDocGen, { generators: [fileGenerator()] }]
@@ -17,6 +20,7 @@ const withMDX = createMDX({
 /** @type {import('next').NextConfig} */
 const config = {
   reactStrictMode: true,
+  output: 'standalone',
   webpack: (config, {
     buildId, dev, isServer, defaultLoaders, webpack
   }) => {
